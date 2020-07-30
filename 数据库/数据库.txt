@@ -1,0 +1,145 @@
+数据库：
+	历史：
+	（1）Excel 二维表（模型）
+	（2）access 基础数据库（可视化）
+	（3）SQLServver 标准化数据库（sql）
+*	（4）mysql 可视化/非可视化
+	（5）Oracle 大数据操作
+MySQL 数据库	数据库端口：3306
+中文三个字符集：utf8	gb2312		gbk
+查看数据库字符集：show character set;
+查当前 数据库 字符集：show variables like "%char%";
+修改 数据库 的字符集：alter database 数据库名 default character set 'utf8';	//该行蓝色处为数据库的名字
+查看 数据表 的编码：show create table 表名;	//该行蓝色处为数据表的名字
+查看 数据表 的编码：show full columns from 表名; 
+	1.驱动名称  com.mysql.jdbc.Driver
+	
+	2.数据库连接	connection
+	3.数据库的操作				//蓝色为自定义
+		（1）数据库登录
+			mysql -u root -p
+			password: 123456
+		（2）查看已有数据库
+			show databases;
+		（3）创建数据库
+			create database database_name;		//“数据库”名称，自定义
+		（4）选择操作数据库
+			use database_name;
+		（5）查看已有数据表
+			show tables;
+		（6）创建数据表
+			create table  table_name(		//“数据表”名称
+			name varchar(20),		//数据内容
+			sex varchar(8),			//插入数据要加双引号
+			birthday date,			//插入数据要加双引号
+			age int(8));			//插入数据不用双引号
+		（7）查看数据表的结构表
+			desc table_name;
+		（8）数据操作
+			a、插入数据
+				insert into table_name values ("jone","boy",12);	//整体插入，int型不用双引号
+				insert into table_name (name,age) value ("",12);	//局部数据插入
+				insert into table_name values (),(),(),();		//多条记录插入
+			b、查询数据
+				select * from table_name;	//*表示查询所有，不查询所有用名字中间用逗号隔开  如：name,age
+				select * from student_information where number="value";	//局部查询
+			c、删除数据
+				delete from table_name where field_neme=value;	//where表示参考性删除 	如：where name=“lili”
+			d、修改数据
+				update table_name set field=value where field=value;		//set为修改内容，where表参考	如：set age=16 where name=“jone”
+		（9） 修改列属性
+			alter table student_information modify column age varchar(10);	//age是列名
+主键：key
+特点：唯一识别性
+修改属性的属性：
+	修改主键：	alter table student_information modify number varchar(20) primary key not null;
+				//alter table student_information alter column number varchar(20) primary key not null;
+	添加：		alter table userinfo add number varchar(20) not null first;	//将number插入到userinfo表的最前边
+	连接查询：	select * from userinfo join student_information on userinfo.number=student_information.number;
+				//select * from userinfo,student_information where number="";
+				select * from aa join bb on aa.age=bb.age where aa.age=19;	//搜索查询
+	删除表列：		alter table userinfo drop column number;
+
+外键：>> foreign key <<	
+
+========================================	
+select * from hcl
+01	#define a "select * from hcl"	不可更改
+02	char tmp[400]="select * from hcl"
+03	sprint(tmp,"select * from %s",a);
+04	mysql命令的C语言化
+	mysql_query(con,tmp);
+05	字符转换
+	mysql_real_query(con,tmp,strlen(tmp));
+06	查询结果保存(结构体)
+	mysql_store_result(con);	//结果集
+	mysql_fetch_row(res);		//单行记录
+07	选择数据库
+	mysql_select_db(con,dbname);	//dbname=数据库名称
+	
+mysql_select_db(&mysql,DATABASE);	//选择数据库
+mysql_query(&mysql,"select * from class");	//数据库操作语言的定义
+int rt=mysql_real_query(&mysql,tmp,strlen(tmp));	//语言的数据库操作实体化
+res=mysql_store_result(&mysql);	//数据库查询结果的保存
+while(row=mysql_fetch_row(res)){	//查询结果判断，至少有一条记录
+	for(int i=0;i<mysql_num_fields(res);i++){
+		printf("%s",row[i]);	//查询结果输出
+	}
+	printf("\n");
+}
+	mysql_free_result(res);	//释放资源，查询结果显示结束
+	mysql_close(&mysql);	//关闭数据库连接
+----------------------------------------------
+项目名称：学生信息综合管理系统
+登录功能(用户名、密码、管理者)
+学生：实现个人信息查询
+	  信息修改(电话、地址、邮箱)
+管理者：
+	学生信息的录入	(number/name/sex/age/ID/telephone/address/e-mail/qq/deportment)√
+	学生信息删除(number)√
+	修改学生信息(all)	ID除外√
+	查询学生信息(all/number/deportment)	//查询所有学生信息，根据学号查询，根据专业查询√
+--------------------------------------------
+1、C语言连接mysql关键词
+2、数据库的增删查改
+3、数据封装，方法独立
+-----------------------------------------------
+综合管理系统
+1、分析功能
+	管理员管理信息权限(增/删/查/改)
+	学生信息查询及基本信息更改(个人信息/成绩)
+2、草案设计
+	login	//登录(用户名/密码/角色)
+	admin_功能界面	//信息查询/修改/删除/新增
+	//角色等级划分(root)常规管理员管理
+	student_功能界面
+	//个人信息显示/成绩查询/常规信息修改
+3、详案设计
+	main()	//项目入口
+	login()	//登录功能
+	dao()	//数据封装
+	mysql_connecttion()	//数据库连接
+	admin_frame()	//管理员界面显示
+	root_frame()	//终极管理员权限
+	student_fframe()	//学生界面显示
+	admin_student_add()
+	admin_student_select()
+	admin_student_delete()
+	admin_student_update()
+	root_admin_add()
+	root_admin_delete()
+	root_admin_update()
+	root_admin_select()
+	student_select_information()
+	student_update_information()
+	student_select_score()
+	admin_score_add()
+	admin_score_update()
+	
+select * from table_name limit 5,10;	//查看5~10行
+	
+	
+
+
+	
+	

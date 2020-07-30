@@ -1,0 +1,396 @@
+监听端口：netstat -lt
+
+SMB：SMB端口：138	139
+	rpm -ivh samba-client-3.0.33-3.28.el5.i386.rpm
+	安装包步骤：
+		先挂载：mount /dev/cdrom /mnt
+		查看一下：ls /mnt
+		切换到这个目录：cd /mnt/Server
+		查看：ls
+		安装包：rpm -ivh samba-3.0.33-3.28.el5.i386.rpm
+	
+	设置smb用户名：smbpasswd -a user5
+	配置文件：/etc/samba/smb.conf
+	权限：chmod 777 hcl/
+	重启：service smb restart
+搜索：直接输入 /
+
+--------------------------------------------
+磁盘格式化：mkfs -t ext3 /dev/sdb4
+
+配额：
+1、启用
+
+修改/etc/fstab 
+	default		>>>>>	grpquota,usrquota
+例：
+/dev/sdb4	/qtest		ext3		grpquota,usrquota	0 0
+设备		挂载目录	文件格式		启用配额		权限
+
+(设置完重启)
+
+2、建立配额文件
+quotacheck -guva
+
+3、设置配额
+
+edquota -u 用户名
+	单位：B
+	soft 软限制 hard 硬限制
+edquota -g 组名
+edquota -p 复制
+查看  quota -v xxxx
+报告配额	repuota
+开关
+quotaon
+quotaoff
+常用命令：
+	dir	列表
+	cd	改变路径
+	lcd	改变本地路径
+	get	下载 mget
+	put	上传
+	
+----------------------------------
+DNS：DNS端口：53
+#加密：include "/etc/rndc.key";
+#根区域：zone"."{
+		type hint;
+		file "named.ca";
+	};
+#在该处下载：
+	国际互联网络信息中心（InterNIC）：ftp://ftp.rs.internic.net/domain/named.root	
+	
+chroot：/=/var/named/chroot/
+/var/named/chroot/etc/named.conf
+	
+正向、反向文件：
+	options { directory "/var/named"; };
+	zone "hcl.com"{
+	type master;
+	file "hcl.com.zone";
+	};
+	zone "1.16.172.in-addr.arpa"{
+	type master;
+	file "1.16.172.arpa";
+	};
+默认单位：秒/s
+@  代表	hcl.com.
+SOA		机构记录
+NS		名称服务器
+A		主机记录
+CNAME	别名记录
+MX		邮件交换记录
+DNS配置文件：vi /etc/resolv.conf
+
+配置正向：vi /var/named/chroot/var/named/hcl.com.zone
+$TTL 18000
+@       IN      SOA     dns.hcl.com. root.hcl.com.(
+                        20180002
+                        300
+                        300
+                        36000
+                        3600 )
+@       IN      NS      dns.hcl.com.
+dns     IN      A       172.16.1.2
+ftp     IN      A       172.16.1.5
+www     IN      A       172.16.1.6
+@       IN      MX      10      mail.hcl.com.
+hcl.com.        IN      A       172.16.1.3
+*.hcl.com.      IN      A       172.16.2.2
+
+
+配置反向：vi /var/named/chroot/var/named/1.16.172.arpa
+$TTL 36000      ; 10 hours
+@       IN      SOA     dns.hcl.com. root.hcl.com.(
+                        20180002        ; serial
+                        300             ; refresh (5 minutes)
+                        300             ; retry (5 minutes)
+                        36000           ; expire (10 hours)
+                        3600            ; minimum (1 hour)
+                        )
+@       IN      NS      dns.hcl.com.
+2       IN      PTR     dns.hcl.com.
+5       IN      PTR     www.hcl.com.
+6       IN      PTR     ftp.hcl.com.
+
+forward
+---------------------------
+DHCP：
+DHCPDISCOVER (DHCP发现)
+DHCPOFFER (DHCP提供)
+DHCPEQUEST (DHCP请求)
+DHCPACK (DHCP确认)
+
+cat /usr/share/doc/dhcp-3.0.5/dhcpd.conf.sample >> /etc/dhcp.conf
+vi dhcp.conf
+
+subnet {
+range 192.168.1.2 192.168.1.62;
+option routers 192.168.1.1;	//路由地址
+option domain-name-servers 61.139.2.69;		//DNS分配
+default-lease-time 
+}
+
+--------------------------------
+
+
+
+
+httpd：
+绑定光盘
+cd /etc/yum.repos.d/
+ls
+touch update.repo
+vi update.repo
+内容：
+[base]
+name=loachost
+baseurl=file:///mnt/Server
+enabled=1
+gpgcheck=0
+//end	
+
+vi /usr/lib/python2.4/site-packages/yum/yumRepo.py	//寻找源
+/remote = url		//搜索s
+将url改为"file:///mnt/Server"
+***yum install tomcat5 tomcat5-webapps tomcat5-admin-webapps	//安装包
+
+cd /var
+ls
+mkdir webtest
+cd webtest
+touch index.html
+touch test.html		//创建好后，写入内容
+
+vi /etc/httpd/conf/httpd.conf
+内容：
+<virtualhost 172.16.1.6>	创建虚拟机
+servername 172.16.1.6:80	域名 主机头
+directoryindex index.html
+documentroot "/var/webtest"
+</virtualhost>
+//end
+------------------------------
+
+
+
+虚拟映射：
+[root@localhost var]# mkdir cgi
+[root@localhost var]# cd cgi
+[root@localhost cgi]# touch test.html
+[root@localhost cgi]# vi test.html
+[root@localhost cgi]# vi /etc/httpd/conf/httpd.conf
+<virtualhost 172.16.1.6>
+servername 172.16.1.6:80
+directoryindex index.html
+documentroot "/var/webtest"
+alias /xxx "/var/cgi"	//虚拟映射测试		172.16.1.2/xxx/test.html
+</virtualhost>
+-----------------------------------
+
+
+
+Indexes 运行目录浏览，如无目标文件 将目录下所有文件列出选择
+MultiViews	允许内容协商的多重视图(自动匹配)
+All	除了multviews之外的所有属性
+ExecCGI	允许在该目录下执行CGI脚本
+FollowSymLinks	可以在该目录中使用符号链接
+Include	允许服务器端包含功能
+IncludesNoExec	允许包含，但不允许执行
+
+htpasswd -c /etc/httpd/authuser user1	//创建文件并加入用户
+vi /etc/httpd/authuser user1
+
+vi /etc/httpd/conf/httpd.conf
+<directory "/var/cgi">
+    options indexes
+    authtype basic
+    authname "dddddddd"
+    authuserfile /etc/httpd/authuser 
+    require user user1
+</directory>
+NameVirtualHost IP:80 启用主机头
+<virtualhost IP：端口>	创建虚拟机
+servername 主机头
+directoryindex index.html	首页
+documentroot "/var/webtest"	主目录
+alias /xxx "/var/cgi"	虚拟目录
+</virtualhost>	结束符
+<directory "全路径/目录名">	目录控制
+    options indexes
+    authtype basic	认真类型设定
+    authname "xxxxxxxxx"	说明
+    authuserfile /etc/httpd/authuser 	用户文件//htpasswd -c /etc/httpd/authuser user1
+    require user 用户名(允许的用户)
+</directory>
+-----------------------------
+
+[root@localhost cgi]# vi /etc/httpd/conf/httpd.conf
+			AddHandler cgi-script .cgi	//启用这一句
+[root@localhost cgi]# mkdir /var/webtest/cgi			
+[root@localhost cgi]# vi /var/webtest/cgi/test.cgi
+#!/usr/bin/perl
+print "Content-type:text/html\n\n";
+print "Hello World\n";
+[root@localhost cgi]# chmod +x /var/webtest/cgi/test.cgi
+[root@localhost cgi]# service httpd restart
+------------------------------------------------
+
+
+
+PHP:
+1、安装PHP支持 3个包
+[root@localhost Server]# ynm install php
+2、后缀名支持 修改/etc/httpd/conf.d/php.conf
+[root@localhost Server]# vi /etc/httpd/conf.d/php.conf
+AddHandler php5-script .php .php3	//增加后缀名为php3的支持
+AddType text/html .php
+3、建立PHP测试文件	test.php
+	内容：<?phpinfo(); ?>
+----------------------------------------------------
+
+
+
+FTP:	
+anonymous
+	允许匿名登录
+	anonymous_enable=YES
+	允许本地用户登录
+	local_enale=YES
+	允许下载
+	write_enable=YES
+
+ls		查看
+put		上传
+get		下载
+mput	批量上传
+mget	批量下载
+cd		切换目录
+lcd		切换本地目录
+bye		退出
+bin		2进制传输
+mkdir	建立目录
+
+
+->限制用户不乱跑
+[root@localhost Server]# vi /etc/vsftpd/vsftpd.conf
+	chroot_list_enable=YES		
+	chroot_list_file=/etc/vsftpd/chroot_list		//启用这两行
+[root@localhost Server]# vi /etc/vsftpd/chroot_list	//写入用户名限制
+限制用户登录
+/etc/hosts.allow
+/etc/hosts.deny
+
+修改文件：/etc/vsftpd/vsftpd.conf
+tcp_wrappers=YES
+local_max_rae=1000
+anon_max_rate=1000
+max_per_ip=1
+
+vsftpd:.smargraining.com,192.168.1.0/24:setenv VSFTPD_LOAD_CONF /etc/vsftpd/vsftp_tcp_wrap.conf
+vsftpd:192.168.2.0/24 DENY
+虚拟网卡 ftp：
+ifconfig eth0:X xxx.xxx.xxx.xxx netmask 255.255.255.0
+mkdir /var/ftp2
+mkdir /var/ftp2/pub
+chmod 755 /var/ftp2
+useradd -d /var/ftp2 ftp2
+passwd ftp2
+cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd_site1.conf
+vi /etc/vsftpd/vsftpd_site1.conf
+	listen_address=新IP
+	ftp_username=ftp2
+	
+vi /etc/vsftpd/vsftpd.conf
+	listen_address=旧IP
+
+ftp 新IP
+
+ftp2
+密码
+-----------------------------------------
+4个服务
+配额：QUOTA
+
+mkdir /var/testing
+fdisk /dev/sdb(i)
+	n:	创建磁盘
+	d：	删除磁盘
+	w:	写入磁盘
+mkfs -t ext3 /dev/sdb(i)	//格式化硬盘
+vi /etc/fstab	//启用配额
+例：
+/dev/sdb4	/qtest		ext3		grpquota,usrquota	0 0
+设备		挂载目录	文件格式		启用配额		权限
+useradd -d /var/testing/tuser -s /sbin/nologin tuser	//建立用户	
+	-d //添加用户的并创建目录
+	-s //指定sher
+cat /etc/passwd
+passwd tuser
+quota -u tuser
+
+FTP:
+vi /etc/vsftpd/vsftpd.conf
+	允许本地用户登录
+	local_enale=YES
+	允许下载
+	write_enable=YES
+	chroot_list_enable=YES	//列表限制
+	chroot_list_file=/etc/vsftpd/chroot_list		
+[root@localhost Server]# vi /etc/vsftpd/chroot_list	//新建	
+
+HTTP：
+	vi /etc/httpd/conf/httpd.conf
+	内容：
+	<virtualhost 172.16.1.10>	创建虚拟机
+		servername www.test.com	域名 主机头
+		directoryindex index.html index.php default.html default.php
+		documentroot "/var/webtest"
+	</virtualhost>
+	NameVirtualHost 172.16.1.10:80
+DNS:
+	vi /var/named/chroot/etc/named.conf
+		options { directory "/var/named"; };
+		zone "test.com"{
+		type master;
+		file "test.com.zone";	//test  标记对
+		};
+		zone "1.16.172.in-addr.arpa"{
+		type master;
+		file "1.16.172.arpa";
+		};
+
+	配置正向：vi /var/named/chroot/var/named/test.com.zone
+		$TTL 18000
+		@       IN      SOA     dns.hcl.com. root.hcl.com.(
+								20180002
+								300
+								300
+								36000
+								3600 )
+		@       IN      NS      dns.test.com.
+		dns     IN      A       172.16.1.10
+		www     IN      CNAME    dns.test.com.
+		
+	配置反向：vi /var/named/chroot/var/named/1.16.172.arpa
+		$TTL 36000      ; 10 hours
+		@       IN      SOA     dns.test.com. root.test.com.(
+								20180002        ; serial
+								300             ; refresh (5 minutes)
+								300             ; retry (5 minutes)
+								36000           ; expire (10 hours)
+								3600            ; minimum (1 hour)
+								)
+		@       IN      NS      dns.hcl.com.
+		1       IN      PTR     dns.hcl.com.
+	
+	vi /etc/resolv.conf
+	cd /var/testing
+	chmod 755 tuser
+	
+	
+	
+
+
+

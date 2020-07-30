@@ -1,0 +1,476 @@
+new->java project
+
+package first;	//package包的关键词，first包的名称
+
+public class first {	//public表示公共定义，class类的关键词，first类的名称
+
+	public static void main(String[] args) {	//java运行入口的方法语句
+		System.out.print("hello world ");	//print输出不换行
+		System.out.println("hello world");	//println输出要换行
+	}
+}
+
+数据：
+int float double long short
+字符：
+char
+字符串：
+String	//区分大小写
+布尔型：
+boolean true/false 1/0
+===========================
+关键词：Scanner	//区分大小写
+模型：Scanner sc=new Scanner(System.in);
+import调用java包java.util
+int a=sc.nextInt();
+String str=sc.next();
+
+数组[]
+int a[]={1,2,3,4,5};	//初始值
+int a[]=new int[5];	//定义
+数组循环赋值
+角码始于0
+单独赋值：a[0],a[1],a[2],a[3],a[4]
+
+纸质笔记：平闰年的输入判断、数组、乘法口诀
+===============================
+位计算
+二进制是位运算的标准
+位权：1 0
+符号：>>
+
+继承(子承父业)
+关键词：extends
+
+添加社会属性
+纸质笔记：动物乐园；
+
+字符串：
+关键词：String
+注意：初始化字符串，值必须""
+定义字符串语法：String str_name;
+初始化语法：String str_name="value";
+
+1、字符串组合
+两个或两个以上的字符串连接
+关键词：+
+例：str_name1 + str_name2
+使用特点：输出语句中的变量与常量之间的连接
+
+2、字符串/字符转换
+字符串是字符的集合
+数组字符 等价于 字符串
+
+字符数组可直接初始值字符串
+语法：char a[]="value";
+
+字符串的定位可转换字符(循环)
+语法：charAt(定位点)初始定位点0
+
+3、字符串转换为数据类型
+作用：便于数据运算
+关键词：Integer
+语法：int int_name=Integer.转换类型(str_name);
+注意：int/float/double 都可转换
+
+备注：数据转换字符串
+String str_name=String.valueof(int_name);
+
+4、日期/字符串转换
+作用：实现数据库信息存储
+关键词：format
+年份：
+	%tY   4位	例：2008
+	%ty   2位	例：08
+月份：
+	%tB   全称	例：Monday
+	%tb   简称	例：Mon
+	%tm   月份	例：02
+日：
+	%td   一个月中的第几天	例：09
+	%te   一个月中的某一天	例：9
+%tc   日期和时间信息
+
+数组
+关键词：[]
+分类：一维/二维/多维
+数组定义必须有对象(数据类型/object)
+定义语法：
+	一维：int[] a=new int[5];
+	二维：int[][] a=new int[2][2];
+	注意：类型/ 名称   /长度
+初始值语法：
+字符单引号、字符串双引号
+	一维：int a[]={1,2,3};
+	二维：int a[][]={{1,1},{2,2}};
+数组的操作语体：循环
+
+数组排序
+条件：
+字符数组/数据数组
+目标：位置的 更替
+参量排序(顺序排序)
+数组必须初始化
+==========================================
+多态：同方法的参数值在运行过程中受"继承"影响而产生不同结果
+
+这是酒->具体是什么酒
+
+1、单处理father/son
+	father a=new father();
+	son a=new son();
+2、father_son处理
+	father a=new son();
+3、father_son处理时，体现son个性参量
+
+1、继承中方法相同，加载子类
+2、方法不同，加载父类。(影响因素为子类参数)
+
+参数(变量)传递：封装
+	set：赋值过程	this
+	get：取值过程	return
+	作用：实现参数的整体操作性及使用性
+方法传递：接口
+	关键词：interface类关键词，与class同等级
+			implements接口调用关键词，在独立类中使用
+特性：重写
+
+常规封装
+1、赋值，取值：get，set
+2、结构化：public
+结构封装：
+	public user(String name,String sex,int age){
+		this.name=name;
+		this.sex=sex;
+		this.age=age;
+	}
+3、验证：toString
+========================================
+数据库链接
+链接模式：jdbc-odbc	桥
+链接数据库条件：
+1、数据库驱动
+2、驱动名称：com.mysql.jdbc.Driver
+3、链接：jdbc
+	链接接口：connection
+	链接条件：url(源地址),username,password
+	
+4、链接测试：
+	驱动测试：class.forname(驱动名称);
+	链接测试：Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/hcl","root","123456");
+																	源地址			        user    password
+5、异常处理机制
+	try……catch
+6、链接分类：
+	常规链接：单次链接
+	链接池：多链接
+
+java的数据操作
+sql语言的数据操作：修改/查询
+插入：insert into table_name values ("jone","boy",12);
+修改：update table_name set column_neme=value where column_neme=value;
+								新的值					位置参考
+删除：delete from table_name where column_neme=value;
+查询：select * from table_name;
+结果集显示查询结果(集合)
+java处理sql语句的方式：静态/动态
+静态：statement
+=========================================
+连接池
+方法：dbcp、c3p0、dbutil
+1、dbcp模式
+	独立文件内存储连接参数
+	db.properties
+	dbcp采用properties接口对文件的读取
+=========================================
+c3p0-config.xml
+<c3p0-config>
+配置文件(默认形式/定义)
+
+</c3p0-config>
+=========================================
+ select * from test112 where age = 18;
+ select name from test112;
+ select age+15-12 from test112;
+ select age+15-12 as hcl from test112;
+模糊查询：
+	%a	a%	_a%	 %a%
+降序查询：
+	select * from test112 order by age desc;
+升序查询：
+	select * from test112 order by age asc;
+内置条件查询：
+	select * from test112 where in(17,18) order by age asc;
+分组：
+	select age from test112 group by age;
+筛选：
+	select age from test112 group by age having age>20;
+	
+=======================================================
+异常：程序中的错误
+语法错误/逻辑错误
+错误具有可修改性
+异常不可预见性
+异常发生的原因：
+非法数据/文件不存在/通讯中断
+常规的异常：
+	检查性异常/运行异常/错误
+java异常结构体系
+异常关键词：exception
+错误关键：error
+1、异常是对方法的修正
+2、只要是方法就可以异常修正，main()也可以
+3、修正异常的模型
+	throw	//单异常,方法内新异常
+	throws	//异常集合,紧跟方法后
+	try{}catch(){}	//语法异常
+	
+ClassNotFoundException	//找不到类
+RunTImeException //运行异常
+ArrayIndexOutOfBoundsException	//数组下标异常
+NullPointerException	//空指针异常
+ArithmeticException //算数异常
+=======================================
+项目/包/类
+项目：开发环境的总纲
+内容：开发语体文件夹src(逻辑源码实现的配置文件)
+	  环境适配文件夹lib(必须配置环境内置，build path)
+	  环境内置文件压缩包：JRE
+		  
+包：项目功能的模块化集合
+内容：具有相似功能的类
+	
+类：实现开发功能的具体单元
+内容：开发的逻辑源码
+类的分类：interface(接口类)/class(运行类)
+类的使用：
+1、主体类(关键词 main)
+2、功能类(方法的集合)
+3、接口类(方法的封装)
+类之间的关系：内部类(包含关系)
+			  外部类(相互独立)
+
+强调：
+1、项目新建(名称/路径/环境)
+2、新建外置环境配置文件夹：lib
+3、包的命名体现集合的功能 	com.hcl.utils/test
+4、类的创建，命名必须体现单元功能
+5、包之间的调用：import
+
+包装类：对数据类型的处理机制
+int/boolean/long 等
+Integer.parseInt(String_name)
+Double.valueOf(String_name)
+==========================================
+GUI开发
+(Java图形图像开发)
+1、包含库：swing
+2、界面化：JFrame
+3、界面的制作：
+	常规界面：大小、位置、名称、是否显示、关闭模式
+	
+界面的BRDV
+
+1、容器
+	JFrame的本体容器
+	面板 JPanel
+	作用：实现界面元素的布局
+2、界面对象的布局
+	流布局、方位布局、坐标布局
+3、界面对象
+	文本框、按钮、滚动条、菜单、下拉列表
+文本框：JTextField
+密码框：JPasswordField
+按钮：JButton
+标签：JLabel
+菜单：JMenu(菜单)
+	  JMenuBar(菜单栏)
+	  JMenuItem(菜单项)
+	  
+关系：菜单栏.add(菜单)
+	  菜单.add(菜单项)
+菜单栏为界面自然属性，通过setJMenuBar属性添加
+
+文本域：多行文字的集合
+关键词：JTextArea
+应用：word操作界面
+	  qq的聊天界面
+	  文本文档
+注意：行列确定文本域大小
+滚动面板：针对多类未完整显示内容在相对位置区域
+注意：与界面本身面板同等级，与JPanel同等级
+关键词：JScrollPanel
+
+标签、文本框、文本域
+按钮：单选按钮、复选框、下拉菜单
+关键词分析：
+标签：JLabel
+文本框：JTextField
+文本域：JTextArea
+按钮：JButton
+
+单选按钮：JRadioButton
+复选框：JCheckBox
+下拉菜单：下拉菜单/菜单项
+	JComboBox
+	菜单.addItem("text");
+===============================================================
+相应：listener(监听)	实现对象的功能化
+分类：动作/鼠标/键盘
+1、动作响应：actionlistener	
+	条件：必须添加至 对象，响应才可完成
+	对象.AddActionlistener
+	注意：1、添加包	2、方法
+	
+>>>>>>>>>>>数据库必学：视图view、索引index、触发器、事务procedure、游标cursor<<<<<<<<<<<
+
+						setText("");	//重置为空
+						
+界面-数据库交互
+1、提示(提示框)	JOptionPane	show_I/M/C/o
+	信息提示	"M"
+		JOptionPane.showMessageDialog(null, "信息提示");
+	输入性选择对话框，可输入相关信息	"I"
+		JOptionPane.showInputDialog("b or g?");
+	多选性提示对话框，比M多选择性分析	"C"
+		JOptionPane.showConfirmDialog(null, "是否进行下一步？");
+	复合性提示对话框
+		JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue);
+============================================
+触发器	(体现同步性)
+关键词：trigger
+分类：块级/行级
+mysql备注触发器：pl/sql
+	delimiter 符号	//防止编辑死循环
+	create trigger trigger_name	//创建触发器
+	after/before	//触发时机
+	isnert/update/delete	//触发原因
+	on table_name	//触发原因对象
+	for each row	//触发器类型为行级
+	begin	//pl/sql语句的开始
+	sql语句;	//触发结果
+	end;	//pl/sql语句结束
+	符号
+	delimiter ;
+	
+注意：本表触发必须添加时间延迟(包)
+	isnert new.字段
+	update new.字段	old.字段
+	delete old.字段
+	
+	触发器无select触发原因：select产生结果集，行级无法确定标靶元素
+	
+	mysql中不能使用alter修改
+	
+	触发器使用实例：
+		1、超市商品销售量变化
+			仓储-销售
+			销售触发仓储(insert-update)
+			目的：实现对账与销账平衡
+		2、学生成绩管理系统
+			本表的数据更改
+			平时+期末--总评
+			学生成绩查询(视图)、(法则运算)
+==========================================
+表格：
+呈现数据的类型及内容
+关键词：JTable
+		与滚动面板同步
+表格定义：
+	1、表格的数组定义
+		JTable 变量=new JTable(columnvalue,columnneme)
+								表格内容	属性名称
+		String columnname[]={};
+		String columnvalue[][num]={{},{}};
+	
+		数据表获取查询结果条目：getRow();
+	2、表格的指向定义
+		vector add	容器对值得承载必须添加表头tablehead(JTableHeader)
+================================================
+成绩录入及查询
+录入界面：科目/学号/姓名/平时/期末
+按钮
+	查询：单科目查询、学生个体成绩查询、全部成绩(all)
+	下拉菜单   按钮
+表格(显示查询结果)
+
+=================================================
+表格的选中状态：
+setRowSelectionInterval
+(index1,index2)
+
+设定条件：
+1、index1< index2
+连续索引
+
+2、index1=index2
+单条索引：
+注意：索引编号从0开始
+
+表格列的置换
+movecolumn(index1,index2)
+index1：置换前位置
+index2：置换后位置
+
+表格内容的全选及取消选中
+全选：selectAll()
+取消：clearSelection()
+
+获取表格行列数
+行：getrowcount()
+列：getcolumncount()
+
+表格的单元格内容获取：getValueAt(x,y),坐标x,y从0开始
+
+鼠标响应对表格值的获取
+1、鼠标响应关键词：MouseListener
+方法重载：mouseClicked()
+
+=============================================
+文件
+关键词：file
+定义文件：
+File file_txt=new File("a.txt");
+创建文件：
+createNewFile()  //无法覆盖 只有删除再创建
+文件属性：
+	文件名称：getName（） //包含文件后缀
+	文件长度：length（）
+	是否隐藏：isHidden() //被隐藏 ，true 反之false
+	文件路径：path()
+
+流:数据传输控制端口
+分类：流入/流出
+写：out  读：in
+(项目本体信息流)
+
+=====================================
+	学生科目成绩综合信息管理系统	
+=====================================
+登录界面：
+	教师/学生/管理员权限登录
+	
+学生界面：
+	学期科目查询(所有科目/学期科目查询)
+	入学至本学期前所有成绩查询/为合格成绩查询
+	单学期成绩查询
+教师界面：
+	下拉菜单选择本学期科目、班级----显示班级学生名单、平时成绩、期末成绩、总评成绩、排名
+管理员界面：
+	
+数据表分析：
+	1、student_info
+	2、teacher_info
+	3、object_info
+	4、view_grade_info	//产生班级名单
+	5、trigger_score	//总评成绩计算
+	管理员表
+	
+姓名*、学号*、身份证*、年龄、性别、专业、班级、密码、出生日期*、联系电话、民族
+
+
+
+
+
+
+

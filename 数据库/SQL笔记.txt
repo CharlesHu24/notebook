@@ -1,0 +1,375 @@
+414023810
+姚程瀚
+
+静态网站
+动态网站
+界定标准：有无数据交互
+
+136558640
+庄文萍
+=====================================
+ctrl+n打开SQL命令行
+
+use db_name;	//选择数据库
+select * from sys.tables;	//查找表
+exec sp_renamedb 'hcl','abc';	//修改数据库名称，hcl原数据库的名称，abc新的库名称
+drop database db_name;	//删除数据库
+drop table table_name;	//删除数据表
+
+创建表
+	create table mydata.dbo.database_name(	//直接选择库
+	Number int Not NULL primary key,	//不为空，主键
+	Name varchar(20),
+	type varchar(10),
+	add_date date)
+
+插入值
+	use database_name
+	insert into table_name
+	values(1,'黄色','黄色系','2018/10/16')
+	
+自增：identity(1,1)	自增必须为主键
+	标识规范->是
+	标识增量：一次增加多少
+	标识种子：初始值
+	
+默认值：constraint default_age dafault 18
+=============================
+insert into user_infor(userid,nickname)
+values(100004,'追骆驼2');
+
+alter table user_infor
+add constraint user_unique_nickname
+unique(nickname);
+====================
+--exec sp_addtype aaabbb, 'varchar(12)','not null';
+
+exec sp_droptype aaabbb;
+
+追加列：
+	alter table mydata.dbo.student
+	add sex varchar(2) constraint default_sex default '女';
+=================================================================
+--多值修改
+	update hu set name='hcl',sex='gay' where num=1;
+--追加列
+	alter table abc.dbo.hu add sex varchar(2)
+--修改数据类型
+	alter table abc.dbo.hu alter column sex varchar(5)
+--查看表结构
+	sp_help hu
+==================================================================
+	alter table mydata.dbo.student
+add sex varchar(2) constraint default_sex default '女';
+
+alter table mydata.dbo.student
+add ID_card varchar(19);
+
+select * from student;
+
+update student set ID_card='111111111111111119' where ID='5';
+
+alter table student
+add constraint uk_id unique(ID_card);
+
+insert into student(name) values('胡成黎');
+
+alter table student
+drop constraint uk_id
+
+alter table student
+drop column ID_card varchar(19) not null
+add constraint uk_id unique(ID_card);
+
+
+
+foreign key……references	外键
+
+=========================
+create table student(
+id int identity(1,1) primary key,
+name nchar(3) not null,
+chinaid char(18) not null,
+phone char(11),
+gender tinyint constraint df_g default 1,
+unique(chinaid));
+
+select * from student;
+
+insert into student values('胡成黎','123456789987654321','9090980','1');
+=========================================
+use abc;
+
+create table vip1(
+id int identity(1,1) primary key,
+stu_name1 varchar(20) not null constraint len_name1 check (len(stu_name1) >2 and len(stu_name1) < 6),
+phone char(11) not null constraint len_phone check(len(phone)=11),
+gender char(2) constraint range_gender check(gender in('F','M')), 
+jtime datetime constraint def_jtime default getdate())
+
+alter table vip1
+add constraint df_gender default 'F' for gender;
+
+alter table vip1
+add constraint uk_vip1_phone unique(phone);
+
+update vip1 set phone = '12345678919' where stu_name1 = 'asd';
+
+exec sp_help vip1;
+exec sp_helpdb abc;
+
+select * from vip1;
+insert into vip1(stu_name1,phone) values('abc','12345678901');
+insert into vip1(stu_name1,phone) values('qwe','12345678901');
+insert into vip1(stu_name1,phone) values('as','12345678902');
+insert into vip1(stu_name1,phone) values('我爱中国哈！','12345678904');
+insert into vip1 values('asd','5612')
+insert into vip1 values('qwe','12345678905','B')
+================================================
+select sum(tmoney) as money,store from sales_infor group by store order by money desc;	//先分组，再排序
+//
+select avg(money) as avgmoney,company from 
+(select sum(tmoney) as money,store,company from sales_infor group by store)
+tmp group by company order by avgmoney desc;
+//
+show full fields from tbname;	//查看完整表结构
+//
+show create table tbname;	//相当于查看创建表时的语句
+//
+select * from columns where table_name='sales_infor';	//最详细的查看表结构
+//
+select count(1),sum(sb.num) from sales_infor sa,sales_items sb where sa.billno = sb.saleid;
+//
+select name,score from student t1,score t2 where t1.id = t2.stuid and name='hcl';
+//
+select sdate,name,tneme,sname,ctime from sign_info si,student st,sign_setting ss,sign_time stm where si.stuid =st.id and si.ssid=ss.id and si.stid=stm.id;
+
+
+
+====================================================================================
+
+>>>>>>>>>>>数据库必学：视图view、索引index、触发器、事务transaction、游标cursor<<<<<<<<<<<
+
+====================================================================================
+
+查看建表的数据：show create sign_info;
+
+创建触发器：
+	create trigger trigger_name
+	trigger_time(after/before) trigger_event
+	(insert/update/delete)
+	on table_name for each row
+	begin
+	触发器要做的工作
+	end
+	delimiter ;
+
+	
+创建视图：
+	create view view_name(column1,column2[,....n])
+	as
+	select *********************;
+	
+限制条件：select ******* where...with check option;
+
+
+修改视图：
+	create or replace view view_name;
+
+通过视图可以有哪些DML操作
+	select
+	insert 可以通过视图插入数据，但是只能基于一个基础表进行插入，不能跨表更新数据
+
+	
+创建索引：
+	create index index_name on table_name(column1,column2[,...n]);
+	
+--修改表结构：
+	alter table table_name add index index_name();
+	
+--查看索引
+	show index from table_name;
+	show keys from table_name;
+
+--唯一索引
+unique index
+
+
+创建事务:一条出错，全部不执行，相当于“非”关系
+	start transaction
+	sql代码(多条)
+	commit;
+
+方法：function
+创建方法：
+	create function function_test
+	((参数列表)parms datatype)
+	returns returnvaluetype
+	begin
+	函数体
+	end;
+	
+	调用方法：select function_test(实参列表);
+	查看方法：show create function function_name;
+	
+	create function test(parma int)
+	returns decimal(10,2)
+	begin
+	declare maxscore decimal(10,2);
+	select max(score) from stu_score where classid=parma into maxscore;
+	return maxscore;
+	end ||
+	
+定义参数 declare parmname datatype;
+给参数复制：select ... from ... where ... into parmname;
+		set parmname=...;
+		
+		
+存储过程：procedure
+创建存储过程：
+	create procedure procedure_name(参数列表)
+	begin
+	sql代码
+	end;
+	
+参数列表：in/out/inout 参数名称 参数数据类型
+
+游标cursor
+1、定义游标declare
+	declare cursor_name cursor for select_statement;
+2、打开游标open
+	open cursor_name;
+3、fetch游标
+	fetch cursor_name into var1[,...n];
+4、关闭游标
+	close cursor;
+
+
+>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<
+	in/not in
+查询sgc和hcl的信息
+select * from student where name = 'sgc' or name = 'hcl';
+select * from student where name in('sgc','hcl');
+
+eg.2有学生表(id),有紧急联系人表(stuid)哪些学生已经填好了紧急联系人表
+select st.* from 学生表 st, 紧急联系人表 where id = stuid;
+select * from 学生表 where id in (select stuid from 紧急联系人表);
+
+eg.3查询没有填写紧急联系人的学生信息
+select * from 学生表 where id not in (select stuid from 紧急联系人表);
+
+2.连表
+select select_list from table_list
+where srch_conditions
+group by gb_conditions
+having h_conditions
+order by ob_conditions
+limit offset,records;
+
+eg.4公司员工表(id,birthday,name,gender)
+统计每个月份过生日的人数
+count(*/colname/1) NULL
+select mouth(1) as count,month(birthday) as mm from 员工表
+group by mm
+having count >10 -- 人数大于的月份
+order by count desc,mm asc;
+
+eg.5合并结果集 unique
+公司领导表(id,name),普通员工表(id,name) 查询公司所有员工的name
+select name from 公司领导表;
+unique
+select name from 普通员工表;
+
+eg.6内部链接 inner join on
+select * from student inner join contact on id=stuid;
+
+eg.7左链接 left join on
+select * from student left join contact on id=stuid;
+
+eg.8右链接 right join on
+select * from contact right join student on id=stuid;
+
+eg.9交叉链接 cross join on
+select * from contact cross join student on id=stuid;
+
+eg.10 student表没有contact信息的数据 join
+select * from stu_info left join contact on id=stuid where stuid isnull;
+=============================
+		数据库作业
+=============================
+
+create table student(
+sno int auto_increment primary key comment '学生编号',
+sname varchar(10) not null comment '姓名',
+sage int default 19 comment '年龄',
+ssex nchar(1) comment '性别');
+
+create table teacher(
+tno int auto_increment primary key comment '教师编号',
+tname varchar(10) comment '教师姓名');
+
+create table course(
+cno int auto_increment primary key comment '课程编号',
+cname varchar(10) not null comment '课程名称',
+tno int comment '教师编号',
+FOREIGN KEY (tno) REFERENCES teacher(tno));
+
+create table score(
+sno int comment '学生编号',
+cno int comment '课程编号',
+score int not null comment '成绩',
+FOREIGN KEY (sno) REFERENCES student(sno),
+FOREIGN KEY (cno) REFERENCES course(cno),
+unique(sno,cno));
+
+select * from
+score join student
+on score.tno=student.tno;
+
+1.show tables;
+2.select cont(1) from student;
+
+="insert into student values("&A2&",'"&B2&"',"&C2&",'"&D2&"')"
+
+3.学习课课程最多的学生姓名和学习的课程数
+select sname,count(sname) as count from student,teacher,course,score where score.sno=student.sno and score.cno=course.cno and course.tno=teacher.tno group by student.sno order by count desc limit 1;
+
+4.每门课的成绩最高分，课程名
+select cname,max(score) from course,score where score.cno=course.cno group by cname;
+
+5.每个学生的总成绩，按成绩从高到低排名(学生名，总成绩)
+select sum(score) as score,sname from score,student where student.sno=score.sno group by student.sno order by score desc;
+
+6.没门课的平均成绩
+select avg(score) as score,cname from score,course where course.cno=score.cno group by course.cno;
+
+7.统计姓李的老师个数
+ select count(1) as '李老师个数' from teacher where tname like "李%";
+
+8.哪个人，哪门课没及格的，多少分
+select sname,cname,score from score,student,course where student.sno=score.sno and course.cno=score.cno and score<60;
+
+9.随机数
+select rand()*100
+
+
+
+SET character_set_client = utf8mb4 ;	//修改字符集
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

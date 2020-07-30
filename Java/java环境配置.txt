@@ -1,0 +1,15 @@
+JAVA环境配置：
+JAVA_HOME
+C:\Program Files\Java\jdk1.8.0_121
+
+classpath
+.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
+
+Path
+%JAVA_HOME%\bin
+%JAVA_HOME%\jre\bin
+
+cmd:
+1、切换磁盘
+2、javac a.java
+3、java a

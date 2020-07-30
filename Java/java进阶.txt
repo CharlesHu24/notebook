@@ -1,0 +1,267 @@
+1、
+public class test {
+	public static void main(String[] args){
+	
+	}
+}
+2、数据类型
+int short long
+float double
+char String
+3、继承
+extends
+4、接口
+interface(方法集合)
+implement(接口实例化)
+5、数据库连接
+class.forname()
+connection
+statement
+preparedstatement
+6、响应
+ActionListener
+7、GUI
+JFrame
+====================================
+集合类：数据封装(数组),数据整合，都是独立性的
+1、Collection
+2、List
+3、Comparable	记录集合类
+	TreeSet
+4、map
+	hashmap/treemap
+	无顺序/有顺序
+	键——值组合式
+
+流布局
+关键词：FlowLayout
+对象：面板(JPanel)
+使用范围：菜单布局/快捷工具布局
+
+嵌套窗口：JFrame内部产生窗口(不会移出窗口)
+关键词：JInternalFrame
+
+桌面面板：JDesktopPane
+
+卡片
+JTabbedPane
+添加元素：
+addTab(标签,图片,内容,组件)
+
+多线程
+作用：实现操作并发
+特点：操作的独立性，操作的连续性
+关键词：Thread
+注：无限循环的有限终止
+线程状态：等待/运行/死锁/终止
+
+1.键盘响应
+关键词：KeyListener
+作用：通过键控制操作
+作用域：任何对象
+注：接口
+必须确认(if)按键对象(键)
+
+实现键盘操作的对焦
+界面对焦
+setFocusable(true);
+
+绘图
+分类：几何图形/字符串
+条件；在界面本体面板类完成
+setContentPane(new DrawPanel());	//DrawPanel名字自定义
+
+绘图方法	关键词：Graphics
+public void paint(Graphics g) {	
+	super.paint(g);
+}
+将对象添加至ContentPane容器
+getContentPane().add(new Draw(), BorderLayout.CENTER);  
+
+Draw替换容器ContentPane,Draw就成了容器
+this.setContentPane(new Draw()); 
+
+-------分割线-------
+1.GUI_SWING/AWT
+基本界面/元素/布局
+
+2.JDBC_SQLSERVER/ORCLE
+jdbc(局域)
+dbcp/c3p0/dbutil(广域)
+
+3.INTERFACE_IMPLEMENTS
+方法封装/功能的实例化
+10个相关关键字：interface、implements、abstract、try…catch、Exception、super、final、Seriallizable、Externalizable
+
+4.extends
+对象属性(变量)
+
+5.thread
+多线程(并发操作)
+
+6.I/O_INPUT/OUTPUT
+信息处理(StringBuilder/StringBuffer)
+
+7.socket
+c/s模式的设置
+
+8.for/while/if/switch
+开发逻辑结构
+
+项目设计
+需求：功能分析
+数据处理：数据库的创建/数据分析
+注意点：
+1.团队功能开发
+2.公共属性封装设计
+3.表格/图谱功能分析
+
+1.GUI_SWING/AWT
+01JFrame 主窗口界面
+02JLabel 标签组件
+03JPanel 轻量级容器
+04JPasswordField 密码框组件
+05JScrollPane 滚动面板
+06JTable 二维表
+07JTabbedPane 卡片结构
+08JTextArea 文本域组件
+09JTextField 文本框组件
+10JButton 按钮组件
+11JCheckBox 复选框组件
+12JComboBox 下拉菜单组件
+13JDesktopPane 桌面容器
+14FlowLayout 流式布局
+15Graphics 绘图
+16GridBagLayout灵活布局
+17GridLayout网格布局
+18Image 图像
+19Insets 容器边框
+20Window 没有边界和菜单栏的顶层窗口
+
+2.JDBC_SQLSERVER/ORACLE
+01Connection 建立会话
+02ResultSet SQL结果集
+03Statement 执行静态SQL语句并返回结果集
+04PreparedStatement 动态SQL语句
+05ResultSetMetaData 用于获取关于ResultSet中列的类型和属性信息的对象
+06Driver 每个驱动程序类必须实现的接口
+07SQLException SQL异常处理
+08DriverManager 管理一组 JDBC 驱动程序的基本服务
+09Date 毫秒级计时器
+10Types 定义用于标识一般 SQL 类型（称为 JDBC 类型）的常量的类
+
+3.继承
+相关关键词：extends/super/this/set/get/cast/protected/base/Format
+
+4.接口
+01interface 定义接口
+02implements 实现接口
+03default 
+04static
+05public
+06private
+07protected
+08get
+09set
+10toString
+
+5.THREAD
+01THREAD 线程关键词
+02Runnable 线程运行接口
+03Sleep 线程休眠时间
+04TimerTask 线程定时器
+05Start 线程开始运行
+06Wait 等待其他线程
+07Notify 唤醒等待的线程
+08synchronized 线程互斥
+09join 等待该线程终止
+10ThreadLocal 线程范围内数据共享
+
+6.I/O INPUT/OUTPUT
+01OutputStream 输出字节流
+02InputStream 字节输入流
+03File 文件和目录路径名
+04FileInputStream 从文件系统中的某个文件中获得输入字节
+05FileOutputStream 文件输出流
+06Writer 写入字符流
+07Reader用于读取字符流的抽象类。
+08FileReader 用来读取字符文件
+09FileWriter 写入字符文件
+10FilePermission 对文件和目录的访问
+
+7.SOCKET
+01.Socket 客户端套接字
+02.ServerSocket 服务端套接字
+03.InetAddress 此类表示互联网协议 (IP) 地址
+04.Inet4Address IPv4地址
+05.Inet6Address IPv6地址
+06.InetSocketAddress 实现 IP 套接字地址（IP 地址 + 端口号）
+07.SocketPermission 通过套接字对网络的访问
+08.InterfaceAddress 此类表示网络接口地址
+09.DatagramSocket 用来发送和接收数据报包的套接字
+10.DatagramPacket 数据报包
+
+8.基本
+01for 可定义内部变量的循环
+02while 满足条件的循环
+03do...while 先执行do的内容 再根据条件执行while
+04switch 选择结构语句
+05if....else if...else 条件判断语句
+06&& || ！与或非
+07= 赋值
+08++ 自增
+09String 字符串
+10return 返回值
+-------分割线-------
+数据库操作：
+	约束设计
+	触发器设计(多表数据同步)
+	视图设计(减少冗余数据)
+	
+功能分析：
+	默认用户名/密码
+	合理使用动作响应(鼠标/键盘)
+	反射(优化设计)
+-------分割线-------
+Java导航定位
+1、借助外部API实现  谷歌/百度
+2、解析IP，实现虚拟定位(具有服务功能解析)  地址实现外部API
+3、自主地图分析(游戏开发)
+
+
+
+
+
+
+
+1.erp管理系统->张楚
+2.oa办公自动化->陈露
+3.家庭理财管理系统->刘楠
+4.项目申报系统->罗一平
+5.车辆管理系统->刘婷婷
+6.音乐网处理系统->胡成黎
+7.网上书店销售管理系统->pass
+8.文件管理操作系统->宋德源
+9.学生成绩处理系统->pass
+10.聊天系统->苏光川
+11.MSN网络综合管理系统->pass
+12.类似BBS论坛实时更新系统->pass
+13.中国围棋81宫格算法->pass
+14.推箱子内置独立系统->pass
+15.国际锦标运动联盟处理系统->pass
+16.开心消消乐简易处理系统->pass  
+17.连连看简易处理系统->pass
+18.坦克大战20关->胡宇涛
+19.俄罗斯方块->pass
+20.国际象棋->林宇
+
+
+
+
+
+
+
+
+
+
+

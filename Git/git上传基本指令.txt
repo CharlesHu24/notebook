@@ -1,0 +1,8 @@
+git config --global user.name 'CharlesHu24'
+git config --global user.email '2736934369@qq.com'
+git init
+git add .
+git commit -m '注释'
+git remote add origin https://github.com/CharlesHu24/blog.git
+git pull --rebase origin master  同步到本地仓库
+git push -u origin master

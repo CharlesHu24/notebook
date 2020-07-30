@@ -1,0 +1,919 @@
+cmd启动：
+C:\Users\Charles Hu>sqlplus
+
+使用“lsnrctl start” 启动监听程序
+
+使用“lsnrctl stop” 停止监听程序
+
+导出
+exp用户名/密码@数据库实例owner=用户名file=文件存储路径 
+例如：exp MM/123456@ORCL owner=MM file=F\abcd.dmp
+
+导入
+imp用户名/密码@数据库fromuser=用户名touser=用户名file=d:\cu.dmp ignore=y 
+例如：imp MM/123456@ORCL fromuser=MM touser=SZZM file=F:\test.dmp ignore=y
+
+清除屏幕  cls
+
+创建新用户：
+	create user hcl identified by 123456;
+附权限：
+	grant dba to C##hcl;
+驱动名称：
+	oracle.jdbc.driver.OracleDriver
+	驱动路径：E:\app\root2\product\12.1.0\dbhome_1\jdbc\lib
+数据库连接：
+	jdbc:oracle:thin:@//127.0.0.1:1521/orcl
+	
+1、服务的开启与关闭
+net start/stop oracleserviceorcl
+2、数据库的SQLplus登录
+	1)、密码未显示登录
+	>sqlplus
+	>system
+	>password(密码不显示)
+	2)、密码显示登录
+	>sqlplus / as sysdba
+	>conn system/password@orcl
+3、关于密码修改
+	alter user user_name identified by new_password;
+4、编写编码修改
+	1)、lnum;(num是一个数字,找出错误行)
+	2)、c/源错误/修改后;
+	3)、r
+	例：
+=============================
+SQL> create table test1(
+  2  name varcha2(20)
+  3  );
+name varcha2(20)
+            *
+第 2 行出现错误:
+ORA-00907: 缺失右括号
+
+
+SQL> l2
+  2* name varcha2(20)
+SQL> c/name varcha2(20)/name varchar2(20);
+  2* name varchar2(20)
+SQL> r
+  1  create table test1(
+  2  name varchar2(20)
+  3* )
+
+表已创建。
+===========================
+1、基本操作
+	1)、创建用户	create user C##(user_name) identified by password;
+	2)、赋予权限	grant dba to C##(user_name);	//dba为最高权限
+	3)、修改密码	alter user user_name identified by password;	
+	4)、删除用户	drop user user_name	CASCADE	//若被删除用户下有表则必须指定CASCADE 以删除用户
+2、数据库的SQLplus登录
+	1)、密码未显示登录
+	>sqlplus
+	>system
+	>password(密码不显示)
+	2)、密码显示登录
+	>sqlplus / as sysdba
+	>conn system/password@orcl
+	 conn C##hcl/123456@orcl
+	
+3、创建表
+	create table stu_information(
+	stu_name varchar2(20),
+	stu_name varchar2(19),
+	stu_id_card varchar2(19)
+	);
+
+4、数据表修改
+	alter
+	1)、添加字段
+	alter table table_name add 字段 属性;
+	2)、删除字段
+	alter table table_name drop column 字段;
+	3)、修改字段
+	alter table table_name modify 字段 属性修改后;
+	要更改数据类型, 则要修改的列必须为空
+
+	
+Create table stu_information(
+stu_name varchar2(20),
+stu_num varchar2(19),
+stu_age number(4),
+stu_sex varchar2(4),
+stu_birthday date,
+stu_id_card varchar2(19),
+stu_telephone varchar2(12),
+stu_address varchar2(60)
+);
+
+5、to_date
+	To_date('1999-01-01','yyyy-mm-dd')
+insert into stu_information values
+('A','123456789987654321','20','男',to_date('1999-01-01','yyyy-mm-dd'),
+'987654321987654321','12345678901','3-628');
+=======================================================
+create table stu_class(
+time varchar2(5),
+MON varchar2(20),
+TUE varchar2(20),
+WED varchar2(20),
+THE varchar2(20),
+FRI varchar2(20)
+);
+
+oracle常用语句60条：
+1.create user username identified by password;	//建用户名和密码oracle
+2.grant dba to username;	//授权
+3.connect username/password	//进入
+4.select table_name,column_name from user_tab_columns where table_name='TABLE_NAME';//查询表中的表名，字段名等等。 最后的table_name要大写。
+5.select distinct table_name from user_tab_columns;	//查询用户下的所有表
+6.ALTER TABLE table_name ADDcolumn_name datatype	//添加字段
+7.ALTER TABLE table_name DROP COLUMN column_name	//删除字段
+8.ALTER TABLE table_name ALTER COLUMN column_name datatype	//修改字段
+
+1.create user username identified by password;//建用户名和密码oracle ,oracle
+2.grant connect,resource,dba to username;//授权 grant connect,resource,dba,sysdba to username;
+3.select table_name,column_name from user_tab_columns where table_name='TABLE_NAME';//查询表中的表名，字段名等等
+4.查询用户下的所有表 select distinct table_name from user_tab_columns; 仅显示一列表名。
+5.如何搜索出前N条记录？ select * from tablename where rownum<n;
+6.查找用户下的所有表：select * from tab; --查询该用户下的所有表及视图（显示表名tname， 类型tabname和clusterid）
+7.建立第一个表create table table_name(a number);
+8.根据已有的表创建新表： create table tab_new like tab_old (使用旧表创建新表)
+9.create table tab_new as select col1,col2… from tab_old definition only
+10.删除新表drop table table_name;
+11.选择：select * from table1 where 范围
+12.插入：insert into table1(field1,field2) values(value1,value2)
+13.删除：delete from table1 where 范围
+14.更新：update table1 set field1=value1 where 范围
+15.查找：select * from table1 where field1 like ’%value1%’
+16.排序：select * from table1 order by field1,field2 [desc]
+17.总数：select count as totalcount from table1
+18.求和：select sum(field1) as sumvalue from table1
+19.平均：select avg(field1) as avgvalue from table1
+20.最大：select max(field1) as maxvalue from table1
+21.最小：select min(field1) as minvalue from table1
+22.增加字段 alter table tabname add column col type
+23.删除字段 alter table tabname drop column
+24.修改字段类型 alter table tableName alter column columnName varchar(4000) 
+25.添加主键： alter table tabname add primary key(col) 
+
+26.删除主键： alter table tabname drop primary key(col) 
+27.创建索引create [unique] index idxname on tabname(col….) 
+28.删除索引drop index idxname
+29.创建视图：create view viewname as select statement 
+30.删除视图：drop view viewname
+31.重命名表：alter table tablename rename to newtablename
+32.重名字段：alter table tablename rename column ID to newID;
+
+33.回滚rollback;
+34.提交commit;
+35.删除所有数据truncate table tablename
+36.表数据复制insert into table1 (select * from table2);
+37.复制表结构create table table1 select * from table2 where 1>1;
+38.复制表结构和数据create table table1 select * from table2;
+39.复制指定字段create table table1 as select id, name from table2 where 1>1;
+40.删除表drop table tabname
+
+
+
+
+1.net start oracleserviceorcl	--启动服务
+2.sqlplus / as sysdba	--登录
+3.create user C##hcl identified by aa123456;	--创建用户
+grant dba to C##hcl;	--赋予权限
+exit	--退出
+4.sqlplus	--登录hcl
+C##hcl
+aa123456
+5.alter user C##hcl identified by 123456;	--修改密码
+6.sqlplus	--登录修改密码后的hcl
+C##hcl
+123456
+7.create table atest(
+id varchar2(12),
+name varchar2(20),
+sex varchar2(4),
+age number(4),
+id_card varchar2(20),
+birthday date
+);	--创建数据表
+8.insert into atest values('1001','rose','女','21','51012520001109602X',to_date('1998-01-01','yyyy-mm-dd'));	--插入数据
+9.select * from atest where id='1001';	--查询数据
+=================================================
+oracle数据约束：
+1.非空
+数据输入不能为空
+关键词：not null
+使用特点：核心数据的必要认证
+2.唯一
+数据的非重复性
+关键词：unique
+使用特点：确保数据的独立性
+create table atest(
+id number(4) not null,
+name varchar2(20) unique
+);
+3.主键
+非空且唯一
+关键词：primary key
+使用特点：确定表结构数据的独立性(一张表有且只有一个主键)
+create table atest(
+id number(4) primary key,
+name varchar2(20) not null
+);
+4.检查
+特殊数据的限定性
+关键词：check
+使用特点：数据的实际使用条件
+create table atest(
+id number(4),
+sex varchar2(5) not null check(sex='男' or sex='女')
+);
+5.外键
+确定数据表间的数据及统一性
+关键词：foreign key
+使用特点：数据表间的同一数据的完整性
+必须保证绑定的数据相同且唯一非空
+create table a(
+id number(4),
+id_card varchar2(20) primary key
+);
+
+create table b(
+name varchar2(20),
+id_card varchar2(20),
+foreign key(id_card) references a(id_card)
+);
+						-------分割线-------
+						课外小知识：
+						设置表中字段的显示宽度：
+						col 字段名 format a10;
+						set linesize 1000;
+						-------分割线-------
+修改表约束
+1.添加/删除主键
+alter table table_name add constraint pk_name primary key(column_name); 
+alter table table_name drop constraint pk_name;
+2.修改/删除非空
+alter table table_name modify column_name constraint nn_nmae not null;	//对属性的修改
+alter table table_name drop constraint nn_name;
+3.添加/删除唯一
+alter table table_name add constraint un_name unique(column_name);
+alter table table_name drop constraint un_name;
+4.修改/删除检查	
+alter table table_name modify column_name constraint c_name check(条件);	//对属性的修改
+alter table table_name drop constraint c_name;
+5.添加/删除外键
+alter table b add constraint fk_name foreign key(id) references a(id);
+alter table b drop constraint fk_name;
+
+视图(虚拟表)
+关键词：view
+作用：实现组合类查询，优化数据
+语法：
+1.创建视图
+Create [or replace] view view_name
+as 
+语句	//组合查询语句
+as name(取一个名字)
+from table_name
+with read only;		//注：为防止视图对原始数据的修改，对视图添加with read only属性 
+
+2.删除视图
+drop view view_name;
+=============================================
+实例分析：
+1员工信息表
+工号、姓名、性别、年龄、职称、身份证、电话
+2员工工资体系表
+工号、基本工资、绩效工资、五险一金、补贴、实发工资
+
+员工工资表(工号,姓名,实发工资)
+员工工资明细(姓名+工资体系)
+员工考核工资体系(工号、姓名、考核工资)
+create or replace view per_info_sa
+as
+select per_info.id,per_info.name,per_sa.jb_sa+per_sa.jx_sa+per_sa.wxyj+per_sa.bt
+as shifagongzi
+from per_info,per_sa where id='';
+
+create or replace view per_sa_detail
+as
+select per_info.name,per_sa.jb_sa,per_sa.jx_sa,per_sa.wxyj,per_sa.sf
+as gongzimingxi
+from per_info,per_sa;
+
+create or replace view per_sa_kaohe
+as
+select per_info.id,per_info.name,per_sa.jx_sa
+as kaohegongzi
+from per_info,per_sa;
+=============================================
+序列：实现记录的顺序
+关键词：sequence
+create table atest(
+id number(4),
+name varchar2(20));
+
+create sequence a_atest;	//创建序列
+
+create or replace trigger aa_atest
+before insert on atest
+for each row
+begin
+select a_atest.nextval into : new.id from dual;
+end;
+/
+
+insert into atest(name) values('jjz');
+
+触发器	关键词：trigger
+作用：实现数据间同步更新(多表)
+create or replace trigger trigger_name
+before/after
+insert/update/delete
+on table_name
+for each row	//行级触发
+begin
+sql语句;
+end;
+/
+
+学生成绩管理系统
+sbj
+学科表(学号/成绩)
+java/oracle/c
+
+stu_info
+个人信息表(学号/姓名/性别/专业/班级)
+
+stu_sbj
+个人成绩表(学号/姓名/java/oracle/c/总成绩/平均成绩)
+
+create table java_sbj(
+id number(4) primary key,
+subject number(3) not null
+);
+  
+create table oracle_sbj(
+id number(4) primary key,
+subject number(3) not null
+);
+
+create table c_sbj(
+id number(4) primary key,
+subject number(3) not null
+);
+
+create table stu_info(
+id number(4) primary key,
+stu_name varchar2(20) not null,
+stu_sex varchar2(4) not null check(stu_sex='boy' or stu_sex='girl'),
+stu_pro varchar2(20) not null,
+stu_class varchar2(10) not null
+);
+
+create table stu_sbj(
+id number(4),
+stu_name varchar2(20),
+java number(3),
+oracle number(3),
+c number(3),
+sum number(4),
+aver number(3)
+);
+  
+create or replace trigger info_sbj
+after insert
+on stu_info
+for each row
+begin
+insert into stu_sbj(id,stu_name) values(:new.id,:new.stu_name);
+end;
+/
+  
+create or replace trigger java_grade
+after insert on java_sbj
+for each row
+begin
+update stu_sbj set java=:new.subject where id=:new.id;
+update stu_sbj set sum=java+oracle+c where id=:new.id;
+update stu_sbj set aver=sum/3 where id=:new.id;
+end;
+/
+  
+create or replace trigger oracle_grade
+after insert on oracle_sbj
+for each row
+begin
+update stu_sbj set oracle=:new.subject where id=:new.id;
+update stu_sbj set sum=java+oracle+c where id=:new.id;
+update stu_sbj set aver=sum/3 where id=:new.id;
+end;
+/
+  
+create or replace trigger c_grade
+after insert on c_sbj
+for each row
+begin
+update stu_sbj set c=:new.subject where id=:new.id;
+update stu_sbj set sum=java+oracle+c where id=:new.id;
+update stu_sbj set aver=sum/3 where id=:new.id;
+end;
+/
+==================================================
+1.学生信息综合管理系统
+成绩/课程/选课
+2.教务系统(正方)
+排课/调停课/申请
+3.钉钉
+打卡信息/交友
+4.工资管理系统
+ERP(工资/考勤)
+5.仓储管理系统
+仓管/交易
+  
+-------分割线-------
+
+sql:结构化语言
+pl/sql:过程化语言	Oracle独有的
+
+结构：
+declare
+定义部分(所有属性变量);
+begin
+功能实现部分;
+end;
+/
+
+结果体现必须打开服务
+set serveroutput on;
+输出语句：dbms_output.put_line(value);	db->database(数据库) m->main(主函数) s->server(服务)
+
+sql>set serveroutput on;	//打开输出服务端口
+sql>declare	//属性变量定义部分
+	begin	//开始
+	dbms_output.put_line('hello world');	//输出关键词及输出内容
+	end;	//结束
+	/
+	
+sql>declare
+	i int;
+	begin
+	i :=24;
+	dbms_output.put_line(i);
+	end;
+	/
+
+sql>declare
+	name varchar2(20);
+	begin
+	name :='rose';
+	dbms_output.put_line(name);
+	end;
+	/
+	
+sql>declare
+	time date;
+	begin
+	time :=to_date('1999-01-01','yyyy-mm-dd');	//时间赋值格式
+	dbms_output.put_line(time);
+	end;
+	/
+
+SQL> declare
+  2  i int;
+  3  begin
+  4  i :=&i;	//输入数字
+  5  dbms_output.put_line(i);
+  6  end;
+  7  /
+  
+SQL> declare
+  2  name varcha2(20);
+  3  begin
+  4  name :='&name';	//输入字符串要加单引号	''
+  5  dbms_output.put_line(name);
+  6  end;
+  7  /
+ 
+sql> declare
+	 time date;
+	 i varchar2(20);	
+	 begin
+	 time :=to_date(&i,'yyyy-mm-dd');	//输入一个时间字符串，转为时间
+	 dbms_output.put_line(time);
+	 end;
+	 /
+	
+-------if……else-------
+declare
+begin
+判断条件
+end if;
+end;
+
+
+SQL> declare
+  2  i int;
+  3  begin
+  4  i :=&i;
+  5  if i>2 then	//如果 i>2 就 输出'你好啊'
+  6  dbms_output.put_line('你好啊');
+  7  else	//否则输出'你不好'
+  8  dbms_output.put_line('你不好');
+  9  end if;	//没有如果了
+ 10  end;
+ 11  /
+ 
+SQL> declare
+  2  id int;
+  3  name varchar2(20);
+  4  begin
+  5  id :=&id;
+  6  name :='&name';
+  7  if id>5 then	//如果ID>5,将值插入atest表
+  8  insert into atest values(id,name);
+  9  end if;
+ 10  end;
+ 11  /
+ 
+-------循环-------
+1.loop
+exit when 条件;
+功能语句;
+循环条件;
+end loop;
+end;
+
+SQL> declare
+  2  i int;
+  3  begin
+  4  i :=&i;
+  5  loop
+  6  exit when i>10;	//当i>10退出,要加';'号
+  7  dbms_output.put_line(i);
+  8  i :=i+1;	//
+  9  end loop;
+ 10  end;
+ 11  /
+ 
+2.while循环
+while 条件
+loop
+功能语句;
+end loop;
+end;
+
+SQL> declare
+  2  i int;
+  3  begin
+  4  i :=&i;
+  5  while i<=10 loop
+  6  dbms_output.put_line(i);
+  7  i :=i+1;
+  8  end loop;
+  9  end;
+ 10  /
+ 
+3.for循环
+for i in value..value
+loop
+功能语句;
+end loop;
+end;
+
+SQL> declare
+  2  begin
+  3  for i in 1..10 loop
+  4  dbms_output.put_line(i);
+  5  end loop;
+  6  end;
+  7  /
+-------分割线-------
+SQL> create user C##rose identified by 123456
+  2  default tablespace users
+  3  temporary tablespace temp
+  4  quota unlimited on users;
+  
+SQL> --创建rose用户及密码,分配默认永久表空间USERS,
+	   默认临时表空间TEMP,以及无上限的USERS表空间
+	   
+grant create session to C##hcl	--基本系统权限,连接
+garnt create table to C##hcl	--赋予创建表权限
+
+grant create table,create session to rose identified by 123456;
+--使用GRANT...IDENTIFIED BY语句创建虚拟用户,并赋予权限  
+-------分割线-------
+存储过程
+作用：实现数据表信息的功能处理，是方法的体现
+关键词：procedure
+语法：create procedure procedure_name(存储过程名称(可带参))
+as/is
+begin
+功能语句;
+end;
+
+call atest();	//调用存储过程,这是个方法要加"()"
+例：
+create or replace procedure atest
+as
+a int;
+begin
+a:=1;
+while a<=520 loop
+begin
+insert into a values(a);
+a:=a+1;
+end;
+end loop;
+end atest;
+/
+ 
+//带参
+SQL> create or replace procedure atest(aa int, bb int)
+  2  as
+  3  begin
+  4  insert into test(a,b) values(aa,bb);
+  5  update test set c=(aa+bb)/2 where a=aa;
+  6  end;
+  7  /
+SQL> call atest(10,20);
+
+select...into...
+通过查询为某“一个”变量赋值
+例：
+SQL> set serveroutput on;
+SQL> declare
+  2  cc int;
+  3  begin
+  4  select c into cc from test where b=20;
+  5  dbms_output.put_line(cc);
+  6  end;
+  7  /
+25
+
+PL/SQL 过程已成功完成。
+
+游标：查询结果的封装
+关键词：cursor
+语法：
+cursor 游标名称 is 查询语句;
+
+使用：for 变量 in 游标
+
+SQL> create or replace procedure cctest
+  2  as
+  3  cursor ccc is select id from atest;
+  4  begin
+  5  for a in ccc loop
+  6  dbms_output.put_line(a.id);
+  7  end loop;
+  8  end cctest;
+  9  /
+  
+游标：集合
+%rowtype	//获取整行
+%isopen  	//判断游标是否打开
+%found	//判断是否有数据
+%notfound	//没有找到数据
+%type	
+
+close 游标名称;		//关闭游标
+  
+create or replace procedure proResults (i int)
+as
+cursor youxiu is select * from results where chengji>=90;
+cursor lianghao is select * from results where 70<=chengji and chengji<90;
+cursor jige is select * from results where 60<=chengji and chengji<70;
+cursor bujige is select * from results where chengji<60;
+begin
+if i=1 then
+for a in youxiu loop
+dbms_output.put_line(a.name||' '||a.chengji);	--'||'连接符  类似于java的'+'
+end loop;
+end if;	--一个条件完成就结束
+if i=2 then
+for a in lianghao loop
+dbms_output.put_line(a.name||' '||a.chengji);
+end loop;
+end if;
+if i=3 then
+for a in jige loop
+dbms_output.put_line(a.name||' '||a.chengji);
+end loop;
+end if;
+if i=4 then
+for a in bujige loop
+dbms_output.put_line(a.name||' '||a.chengji);
+end loop;
+end if;
+end proResults;
+ /
+ 
+SQL> create or replace procedure rowtype
+  2  as
+  3  a int;
+  4  b int;
+  5  c number;
+  6  cursor res is select * from results;
+  7  getrow results%rowtype;
+  8  begin
+  9  a:=0;
+ 10  b:=0;
+ 11  c:=0;
+ 12  if res%isopen then
+ 13  null;
+ 14  else
+ 15  open res;
+ 16  end if;
+ 17  fetch res into getrow;
+ 18  while res%found loop
+ 19  b:=res%rowcount;
+ 20  a:=a+getrow.chengji;
+ 21  c:=a/b;
+ 22  fetch res into getrow;
+ 23  end loop;
+ 24  dbms_output.put_line(''||getrow.name||'  '||getrow.chengji||'  '||c);
+ 25  close res;
+ 26  end rowtype;
+ 27   /
+  
+    
+						-------分割线-------
+						db数据库
+						创建数据库：connect 'jdbc:derby:d:/atest;create=true';
+						驱动名称：org.apache.derby.jdbc.EmbeddedDriver
+						数据库链接：jdbc:derby:db_ExpressLetter
+
+1、oracle操作入口
+oracle sqlplus使用
+启动服务
+显示密码登录/隐藏登录
+
+oracle sql developer
+oracle/tns/mts
+
+2、用户设计
+创建用户C##
+删除用户cascade
+
+3、表约束
+
+4、单表查询
+获取所有列 *
+获取指定column_name
+算数表达式 +-*/()
+别名 as
+获取不重复数据 distinct
+
+where子句的使用
+比较运算符> >= < <= !=
+判断非空is not null
+集合 in ()      not in ()
+模糊 like  %  _
+区间查询 between and
+逻辑 and or not
+获取n条记录 rownum
+
+操作查询结果：
+排序：order by desc(降序)/asc(默认升序)
+分组：group by
+筛选：having
+
+5、插入数据 insert into
+全表插入
+局部数据插入
+
+6、修改数据 update
+set  where
+
+7、删除数据 delete
+where
+
+8、多表查询
+select * from 表1，表2;(笛卡尔积)  消除笛卡尔积，添加限定性条件，达到预期的字段查询
+
+join连接查询
+内连接查询
+外连接查询
+全连接查询
+
+9、pl/sql编辑块
+declare
+定义变量;
+begin
+语法;
+end;
+/
+
+set serveroutput on
+/**/ 整段注释
+--  单行注释  
+
+变量赋值：
+：=值
+default 值
+select into
+fetch into
+
+控制语句：
+if 条件 then 结果;
+
+if 条件 then 结果;
+elseif 条件 then 结果;
+else 结果;
+
+when 条件 then 结果
+else 结果;
+end case;
+
+循环语句：
+
+while 条件 loop 
+语句;
+end loop;
+
+10、大对象
+存储图片/音频/视频
+create table patchmain(
+patch_id number,
+patch_desc blob)
+tablespace users
+lob(patch_desc) store as securefile (tablespace lob_data01);
+
+create tablespace lob_data datafile 'D:/oracleTest/lob_data01.dbf'
+size 1000m extent management local uniform size 1m segment space management auto;
+
+---------------------------------------------------------------------------
+
+01游标(oracle项目的结果集)
+
+declare
+cursor cur is select * from test;
+cur_row test%rowtype;
+begin
+for cur_row in cur loop
+dbms_output.put_line(cur_row.id);
+end loop;
+end;
+/
+
+02触发器(数据表之间的数据关联)
+
+create or replace trigger tri_name
+before/after/instead of
+insert/update/delete
+on table_name
+for each row
+begin
+功能语句;
+end tri_name;
+/
+
+03存储过程(oracle功能方法)
+
+create or replace procedure pro_name(
+参数1, ……)
+is
+变量;……
+begin
+declare
+局部变量;
+begin
+功能语句;
+end;
+end pro_name;
+/
+
+variable 变量;
+exec pri_name(1,变量);
+print;
+
+create table hotelManage(
+hot_roomNumber varchar2(5) primary key,
+hot_price number(6,2) not null,
+hot_toward varcahr2(6) not null check(hot_toward='东' or hot_toward='西' or hot_toward='南' or hot_toward='北' or hot_toward='东北' or hot_toward='西北' or hot_toward='西南' or hot_toward='东南'),
+hot_floor number(3) check(hot_floor>=1 and hot_floor<=11),
+hot_status varchar2(8) not null check(hot_status='已入住' or hot_status='未入住'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

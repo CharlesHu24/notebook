@@ -1,0 +1,165 @@
+复习：
+
+Samba	局域网内实现文件共享
+		Linux和windows文件共享
+配置文件：/etc/samba/smb.conf
+关键配置：
+	全局
+		工作组 workgroup = xxx
+		许可 hosts allow = 网络地址
+						   (192.168.1)	只写网络地址部分
+	共享
+		[共享名]
+			path = 路径
+			writable = yes
+		
+	用户控制 security = user
+	用户建立 usernamemap = /etc/samba/smbuser 启用用户映射
+	
+	客户端访问 smbclient //IP -U 用户名
+		
+NFS 类UNIX系统之间文件共享
+	配置文件：/etc/exports
+			  目录 ip(选项)
+			  /var 192.168.1.1(or)
+客户端
+	showmount -e IP
+	mount -t nfs ip:/目录名 本地目录
+	
+FTP 文件传输 可用于Internet vsftp
+	配置文件 /etc/vsftpd/vsftpd.conf
+			anonymous_enable = yew (/var/ftp/pub)
+			local_enable = yes (用户的个人文件夹)
+			wirte_enable = yes ()
+			限制用户切换到home以外的目录
+			chroot_list_enable = yes
+			chroot_list_file = /etc/vsftpd/chroot_list_file
+			chroot_local_user = yes 
+			被动模式启用
+		
+apach httpd
+	
+	新建虚拟主机
+		<VirtualHost>
+			ServerName 域名		主机头
+			DocumentRoot "路径"指定主目录
+			DirectoyIndes 首页名 例：index.heml
+			Alias 别名 "真实路径"
+				<Directory "路径">
+					Options Indexs ExecCGI
+					AuthType Basic
+					AuthName "xxxxxxxx"
+					AuthUserFile /etc/httpd/xxx
+					Require user 用户名
+				</Directory>
+		</VirtualHost>
+		AuthUser建立	htpasswd -c /etc/httpd/xxx	用户名
+		
+DNS 域名服务 bind
+	主配置文件 /etc/named.conf
+		option { directory "/var/named"; };
+		zone "域名" {
+			type master;
+			file "域名.zone";
+			allow-transfer {ip;};
+			};
+		zone "6.168.192"
+	正向配置文件 /var/named/域名.zone
+		$ttl 3600
+		域名或@ IN	SOA	ns.域名. root.域名.
+		(20181213 10800 3600 3600)
+		域名或@ IN	NS	ns.域名.
+		ns		IN	A	ip
+		www		IN	CNAME	ns.域名.
+		域名或@	IN	MX	10	www
+		7		IN	PTR	ftp.域名.
+		
+		配置反向：vi /var/named/chroot/var/named/1.16.172.arpa
+		$TTL 36000      ; 10 hours
+		@       IN      SOA     dns.test.com. root.test.com.(
+								20180002        ; serial
+								300             ; refresh (5 minutes)
+								300             ; retry (5 minutes)
+								36000           ; expire (10 hours)
+								3600            ; minimum (1 hour)
+								)
+		@       IN      NS      dns.hcl.com.
+		1       IN      PTR     dns.hcl.com.
+	
+	vi /etc/resolv.conf
+	cd /var/testing
+	chmod 755 tuser
+		
+DHCP 动态主机分配协议
+	主配置文件 /etc/dhcpd.conf
+		subnet	192.168.6.0 netmask 255.255.255.0 {
+		rangs 	192.168.6.2 192.168.6.100;
+		option	routers	192.168.6.254;
+		option	subnet-mask	255.255.255.0;
+		option domain-name-servers 61.139.2.69;
+		default-lease-time 1800;
+		max-lease-time 3600;
+		}
+		
+SQUID 代理服务器 (LAN)
+	配置文件 /etc/squid/squid.conf
+		http_port 3128
+		cache_mem x MB
+		cache_dir ufs /var/spool/squid 大小 1L 2L
+		cache_dir ufs /var/spool/squid 4096 16 256
+		dns_nameservers 61.139.2.69 202.98.96.68
+		acl xx src ip
+		http_access allow xx
+		src源地址 dst目的地址
+		time 时间
+		url_regex URL规则匹配
+		urlpath_regex URL规则匹配,不考虑协议
+		acl xx urlpath_regex -i \.mp3$ \.mp4$
+		http_access deny xx
+			maxconn 最大连接数
+
+防火墙 IPTABLES
+	NAT与网络访问限制
+	开始forward功能
+	/proc/sys/net/ipv4/ip_forward	0关闭 1开启
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+	防火墙 配置
+	iptables -F
+	iptables -X
+	iptables -t nat -A POSTROUTING -o 接口名(WAN接口) -j MASQUERADE
+	客户端
+		1、设置网关GATEWAY = IP(防火墙LAN地址)
+		2、设置DNS 修改 /etc/resolv.conf
+			name-servers 61.139.2.69
+		访问控制
+			网站控制
+			iptables -A FORWARD -d 域名或IP -j DROP
+			禁止某客户机访问
+			iptables -A FORWARD -s IP或网络地址 -j DROP
+			通过端口禁止访问
+			iptables -A FORWARD -p TCP --dport 目的端口 -j DROP
+			目的地址转换 内网的映射
+			iptables -t nat -A PREROUTING -i WAN接口 -p TCP --dport 80 -j DNAT --to 内网WEBip:80
+			禁止来自外网的ping
+			iptables -A INPUT -i WAN接口 -p ICMP -j DROP
+			与SQUID配合 实现透明代理
+			iptables -t nat -A PREROUTING -i LAN -p TCP --dport 80 -j DNAT --to LANIP:3128(SQUID工作端口) 
+		
+postfix 邮件服务器配置 SMTP
+	myhostname = 主机域名
+	mydomain = 域名
+	本机寄出邮件署名
+	myorigin = $mydomain
+	监听接口
+	inet_interfaces = all或ip
+	可接收邮件的域名
+	mydestination = $mydomain,域名
+	允许转发邮件(网络)
+	mynetworks = LAN网络地址
+	允许转发那些域的邮件
+	relay_domains = $mydomain
+	POP实现 dovecot
+	配置文件 /etc/dovecot.conf
+	protocols = pop3
+		{listen = ip:110}
+	IMAP4
