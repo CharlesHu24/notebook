@@ -1524,7 +1524,7 @@ const path = require('path')	// 动态获取路径依赖node包
 
 module.exports = {
 	// 入口
-  ectry: './src/main.js',
+  entry: './src/main.js',
   
   // 出口
   output: {	
@@ -1707,7 +1707,7 @@ module: {
       // css-loader只负责将css文件进行加载
       // style-loader负责将样式添加到DOM中
       // 使用多个loader时，是从右到左
-      use: [ 'css-loader', 'style-loader' ]
+      use: [ 'style-loader', 'css-loader' ]
     }
   ]
 }
@@ -1739,7 +1739,7 @@ webpack.config.js添加
               limit: 8192,
 						 // 图片打包到img路径下 图片原名 + 8位hash值 + 原文件的扩展名
 						 name: 'img/[name].[hash:8].[ext]'
-            }.
+            }
           }
         ]
       }
