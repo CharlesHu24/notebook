@@ -142,7 +142,7 @@ Container容器是窗口布局的最基本元素，推荐所有样式都定义�
 ```css
 .no-gutters {
 	margin-right: 0;
-	martgin-left: 0;
+	margin-left: 0;
 }
 
 .no-gutters > .col,
