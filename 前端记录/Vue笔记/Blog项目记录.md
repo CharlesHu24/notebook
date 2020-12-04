@@ -15,18 +15,33 @@
   ```
   export class Blog {
     constructor(itemInfo) {
-    	this.img = itemInfo.img
+      this.id = itemInfo.id
       this.title = itemInfo.title	// String
       this.author = itemInfo.author	// string
-      this.describe = itemInfo.describe // string
-      this.tag = itemInfo.tag
+      this.describe = itemInfo.describes // string
+      this.category = itemInfo.category
       this.heart = itemInfo.heart
-      this.commentsColumn = itemInfo.commentsColumn
+      this.commentCol = itemInfo.commentCol
     }
   }
   ```
-
-
+  
+  - 数据库
+  
+  ```
+  create table blogItem(
+  id int(8),
+  title varchar(20),
+  authors varchar(20),
+  describes varchar(20),
+  category varchar(20),
+  heart int(4),
+  commentCol int(4));
+  
+  
+  ```
+  
+  
 
 #### 抽离blog组件有两种做法
 
@@ -56,7 +71,7 @@
 
 - 第二种方式
 
-  不使用插槽的方式，将`BlogListItem`组件放入`blogList`中，对`blogListItem`组件进行循环，动态获取数据，有多少条博客，就循环多少个组件
+  不使用插槽的方式，将`BlogListItem`组件放入`blogList`中，对`blogListItem`组件进行循环，动态获取数据，有多少条博客，就循环出多少个组件
 
   循环整个数据，将每条数据传到`BlogListItem`里面
 
@@ -108,28 +123,23 @@
           </span>
           <div class="post-bottom overflow">
             <ul class="nav nav-justified post-nav pointer">
-              <!--          blogItem.tag-->
-              <li class="blogItem-tag">
-                <span>
-                  <a><i class="fa fa-tag"></i></a>
-                  <a v-for="item in blogItem.tag">{{item}}</a>
-    						</span>
-              </li>
+              <!--          blogItem.category-->
+              <li><a><i class="fa fa-folder"></i>{{ blogItem.category }}</a></li>
               <!--          blogItem.heart-->
               <li><a><i class="fa fa-heart"></i>{{blogItem.heart}} Love</a></li>
-              <!--          blogItem.commentsColumn-->
-              <li><a><i class="fa fa-comments"></i>{{blogItem.commentsColumn}} Comments</a></li>
+              <!--          blogItem.commentsCol-->
+              <li><a><i class="fa fa-comments"></i>{{blogItem.commentsCol}} Comments</a></li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-</template>
+  </template>
   ```
-
+  
   **这样动态控制组件的个数**
   
-  
+
 
 
 
@@ -145,19 +155,28 @@
 
 
 
-### blog页面和detail页面部分相似的组件
+
+
+### 博客评论
+
+- 封装评论列表组件
+
+- 评论列表数据封装
+
+  ```
+  export class comment{
+  	constructor(commentInfo) {
+  		this.img = commentInfo.img,
+  		this.user = commentInfo.user,
+  		this.text = commentInfo.text,
+  		this.timer = commentInfo.timer,
+  		// 如果有回复
+  		// 暂时不知道
+  	}
+  }
+  ```
 
 
 
-`header`
 
-`footer`
-
-`breadcrumb`
-
-`content-main`
-
-`content-sidebar`
-
-`content-main`中具体放什么根据内容决定，`content-main`提供布局
 
