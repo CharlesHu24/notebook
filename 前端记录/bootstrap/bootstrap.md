@@ -183,13 +183,13 @@ Container容器是窗口布局的最基本元素，推荐所有样式都定义�
 
 
 
-## 五. BootstrapValidator自定义验证
+## 五. 关于自定义验证
 
-### 5.1 下载BootstrapValidator库
+### 5.1  下载`BootstrpaValidator`库
 
-![](bootstrap/images/bootstrapValidator文件.png)
 
-### 5.1 引用必要文件
+
+### 5.2 引入必要文件
 
 ```html
 <link rel="stylesheet" href="/path/to/bootstrap/css/bootstrap.css"/>
@@ -201,34 +201,35 @@ Container容器是窗口布局的最基本元素，推荐所有样式都定义�
 <script type="text/javascript" src="/path/to/dist/js/bootstrapValidator-all.js"></script>
 // 不带常用规则，需自定义规则
 <script type="text/javascript" src="/path/to/dist/js/bootstrapValidator.min.js"></script>
+
 ```
 
-
-
-### 5.2 编写HTML
+### 5.3 编写HTML
 
 在表单中，若对某一字段想添加验证规则，默认需要以`<div class=”form-group”></div>`包裹（对应错误提示会根据该class值定位），内部`<input class="form-control" />`标签必须有name属性值，此值为验证匹配字段。
 
-```html
-<form id="testForm" class="form-horizontal form-bordered">
+~~~html
+<form class="form-horizontal">
   <div class="form-group">
     <label class="col-lg-3 control-label">Username</label>
     <div class="col-lg-9">
-        <input type="text" class="form-control" name="username" />
+      <input type="text" class="form-control" name="username" />
     </div>
   </div>
 </form>
-```
+~~~
 
 
 
-### 5.3 定义自定义验证规则
+### 5.4 定义自定义验证
+
+该规则是拓展插件的validators方法。
 
 ~~~html
 <script type="text/javascript">
-  // #sign_id 为ID
+  //#sign_id 为ID
   $('#sign_in').bootstrapValidator({
-    //这是必备的
+    //这是必要的
     feedbackIcons: {
       valid: 'glyphicon glyphicon-ok',
       invalid: 'glyphicon glyphicon-remove',
@@ -251,4 +252,137 @@ Container容器是窗口布局的最基本元素，推荐所有样式都定义�
 ~~~
 
 
+
+### 5.5 拓展-身份证、手机号、邮箱验证等等
+
+```html
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#registerForm').bootstrapValidator({
+      message: '此值无效!',
+      feedbackIcons: {
+        valid: 'glyphicon glyphicon-ok',
+        invalid: 'glyphicon glyphicon-remove',
+        validating: 'glyphicon glyphicon-refresh'
+      },
+
+      fields: {
+        regUserName: {
+          validators: {
+            notEmpty: {
+              message: '姓名值不能为空！'
+            },
+            stringLength: {
+              min: 2,
+              message: '用户名长度必须大于2！'
+            },
+            regexp: {
+              regexp: /^[a-zA-Z\u4e00-\u9fa5]+$/,
+              message: '用户名不能有数字和字符！'
+            }
+          },
+        },
+        regIdNum: {
+          validators: {
+            notEmpty: {
+              message: '身份证号码不能为空！'
+            },
+            regexp: {
+              regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+              message: '身份证号码格式不正确，为15位和18位身份证号码！'
+            },
+            callback: {/*自定义，可以在这里与其他输入项联动校验*/
+              message: '身份证号码无效！',
+              callback: function (value, validator, $field) {
+                //15位和18位身份证号码的正则表达式
+                var regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+                //如果通过该验证，说明身份证格式正确，但准确性还需计算
+                var idCard = value;
+                if (regIdCard.test(idCard)) {
+                  if (idCard.length == 18) {
+                    var idCardWi = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2); //将前17位加权因子保存在数组里
+                    var idCardY = new Array(1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2); //这是除以11后，可能产生的11位余数、验证码，也保存成数组
+                    var idCardWiSum = 0; //用来保存前17位各自乖以加权因子后的总和
+                    for (var i = 0; i < 17; i++) {
+                      idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
+                    }
+                    var idCardMod = idCardWiSum % 11;//计算出校验码所在数组的位置
+                    var idCardLast = idCard.substring(17);//得到最后一位身份证号码
+                    //如果等于2，则说明校验码是10，身份证号码最后一位应该是X
+                    if (idCardMod == 2) {
+                      if (idCardLast == "X" || idCardLast == "x") {
+                        return true;
+                        //alert("恭喜通过验证啦！");
+                      } else {
+                        return false;
+                        //alert("身份证号码错误！");
+                      }
+                    } else {
+                      //用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
+                      if (idCardLast == idCardY[idCardMod]) {
+                        //alert("恭喜通过验证啦！");
+                        return true;
+                      } else {
+                        return false;
+                        //alert("身份证号码错误！");
+                      }
+                    }
+                  }
+                } else {
+                  //alert("身份证格式不正确!");
+                  return false;
+                }
+              }
+            }
+          }
+        },
+        customage: {
+          validators: {
+            notEmpty: {
+              message: '年龄不能为空！'
+            },
+            stringLength: {
+              min: 1,
+              max: 3,
+              message: '年龄太大了！'
+            },
+            regexp: {
+              regexp: /^[0-9]+$/,
+              message: '年龄只能为数字！'
+            }
+          }
+        },
+        customtel: {
+          validators: {
+            notEmpty: {
+              message: '手机号码不能为空！'
+            },
+            regexp: {
+              regexp: /^1[34578]\d{9}$/,
+              message: '请输入完整手机号码！'
+            }
+          }
+        },
+        customemail: {
+          validators: {
+            notEmpty: {
+              message: '邮箱不能为空！'
+            },
+            regexp: {
+              regexp: /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/,
+              message: '请输入完整邮箱！'
+            }
+          }
+        },
+
+      }
+
+    });
+    //确认
+    $('#registerBtn').click(function () {
+      $('#registerForm').bootstrapValidator('validate');
+    });
+  });
+</script>
+```
 
