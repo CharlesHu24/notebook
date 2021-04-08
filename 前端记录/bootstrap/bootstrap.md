@@ -187,7 +187,7 @@ Container容器是窗口布局的最基本元素，推荐所有样式都定义�
 
 ### 5.1  下载`BootstrpaValidator`库
 
-
+下载地址：(https://github.com/nghuuphuoc/bootstrapvalidator/archive/v0.4.5.zip)
 
 ### 5.2 引入必要文件
 
